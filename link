@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+OBJ_FILE="${INPUT_FILE:-$1}"
+OUT_FILE="${OUT_FILE:-"$(basename "$OBJ_FILE" ".o")"}"
+
+RED="$(tput setaf 1)"
+BOLD="$(tput bold)"
+RESET="$(tput sgr0)"
+
+if [ -z "$OBJ_FILE" ]; then
+  echo "${BOLD}${RED}error${RESET}${BOLD}: no object file provided${RESET}"
+  exit 1
+fi
+
+ld \
+  -o "$OUT_FILE" \
+  -dynamic-linker \
+  /lib/ld-linux-x86-64.so.2 \
+  /usr/lib/crt1.o \
+  /usr/lib/crti.o \
+  -lc \
+  "$OBJ_FILE" \
+  /usr/lib/crtn.o
